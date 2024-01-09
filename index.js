@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         id: 1,
@@ -23,6 +25,14 @@ let persons = [
         number: "39-23-6423122"
     }
     ]
+
+generate_newId = () => {
+    new_id = Math.floor(Math.random() * 10000)
+    if (persons.find(person => person.id === new_id)) {
+        generate_newId()
+    }
+    return new_id
+}
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -47,6 +57,32 @@ app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(note => note.id !== id)
     response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    if (!body.name) {
+        return response.status(400).json({
+            error: 'name must be given'
+        })
+    }
+    if (!body.number) {
+        return response.status(400).json({
+            error: 'number must be given'
+        })
+    }
+    if (persons.find(person => person.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+    const person = {
+        id: generate_newId(),
+        name: body.name,
+        number: body.number
+    }
+    persons = persons.concat(person)
+    response.json(person)
 })
 
 const PORT = 3001
