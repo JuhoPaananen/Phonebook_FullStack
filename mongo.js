@@ -23,30 +23,30 @@ const noteSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', noteSchema)
 
 if (process.argv.length === 3) {
-    console.log('phonebook:')
-    Person
+  console.log('phonebook:')
+  Person
     .find({})
     .then(result => {
-        result.forEach(note => {
-            console.log(note.name, note.number)
-        })
-        mongoose.connection.close()
-        process.exit(1)
-        }
+      result.forEach(note => {
+        console.log(note.name, note.number)
+      })
+      mongoose.connection.close()
+      process.exit(1)
+    }
     )
 } else if (process.argv.length === 5) {
-    const note = new Person({
-        name: name,
-        number: number,
-    })
-    
-    note.save().then(result => {
-        console.log('note saved!')
-        mongoose.connection.close()
-        process.exit(1)
-    })    
-} else {
-    console.log('wrong number of arguments')
+  const note = new Person({
+    name: name,
+    number: number,
+  })
+
+  note.save().then(result => {
+    console.log('note saved!')
+    mongoose.connection.close()
     process.exit(1)
+  })
+} else {
+  console.log('wrong number of arguments')
+  process.exit(1)
 }
 
